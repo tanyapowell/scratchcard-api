@@ -8,7 +8,12 @@ public class PurchaseDB {
     private static Map<Long, Purchase> purchases = new HashMap<Long, Purchase>();
 
     public static void savePurchase(Purchase purchase) {
-        purchases.put(purchase.getPurchaseId(), purchase);
+        if(doesIdExist(purchase.getPurchaseId()) != true) {
+            purchases.put(purchase.getPurchaseId(), purchase);
+        }
+        else {
+            System.out.println("Key already exists");
+        }
     }
 
     public static Purchase getByMemberId(Purchase memberId) {
@@ -39,7 +44,7 @@ public class PurchaseDB {
         return result;
     }
 
-    public boolean doesIdExist(long purchaseId) {
+    public static boolean doesIdExist(long purchaseId) {
         boolean result;
 
         if (purchases.containsKey(purchaseId)) {

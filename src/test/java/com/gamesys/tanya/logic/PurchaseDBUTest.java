@@ -5,6 +5,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.*;
+
 import static org.hamcrest.Matchers.is;
 
 public class PurchaseDBUTest {
@@ -74,4 +77,30 @@ public class PurchaseDBUTest {
         Assert.assertEquals("Purchase{purchaseId=1, memberId=123, numberOfTicketsPurchased=3}", db.getByPurchaseId(1));
     }
 
+    @Test
+    public void testGetAllPurchases(){
+        Purchase purchase1 = new Purchase(1, 123, 3);
+        Purchase purchase2 = new Purchase(22, 456, 2);
+        Purchase purchase3 = new Purchase(333, 789, 1);
+        db.savePurchase(purchase1);
+        db.savePurchase(purchase2);
+        db.savePurchase(purchase3);
+
+        List<Purchase> list = new ArrayList<Purchase>();
+        list.add(purchase1);
+        list.add(purchase2);
+        list.add(purchase3);
+
+        Assert.assertEquals(list, db.getAll());
+    }
+
+//    TODO - Fix this
+    @Test
+    public void testForDuplicatedKeys(){
+        Purchase purchase1 = new Purchase(1, 123, 3);
+        Purchase purchase2 = new Purchase(1, 123, 3);
+        db.savePurchase(purchase1);
+        db.savePurchase(purchase2);
+        Assert.assertTrue(db.doesIdExist(1));
+    }
 }
