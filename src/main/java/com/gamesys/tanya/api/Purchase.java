@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Purchase {
     private long purchaseId;
-    private long memberId;
+    private long playerId;
     private int numberOfTicketsPurchased;
 
     public Purchase() {}
 
-    public Purchase(int purchaseId, int memberId, int numberOfTicketsPurchased){
+    public Purchase(int purchaseId, long playerId, int numberOfTicketsPurchased){
         this.purchaseId = purchaseId;
-        this.memberId = memberId;
+        this.playerId = playerId;
         this.numberOfTicketsPurchased = numberOfTicketsPurchased;
     }
 
@@ -25,9 +25,9 @@ public class Purchase {
     }
 
     @JsonProperty
-    public long getMemberId() { return memberId; }
+    public long getPlayerId() { return playerId; }
 
-    public void setMemberId(long memberId) { this.memberId = memberId; }
+    public void setPlayerId(long playerId) { this.playerId = playerId; }
 
     @JsonProperty
     public int getNumberOfTicketsPurchased() { return numberOfTicketsPurchased; }
@@ -40,7 +40,7 @@ public class Purchase {
     public String toString() {
         return "Purchase{" +
                 "purchaseId=" + purchaseId +
-                ", memberId=" + memberId +
+                ", playerId=" + playerId +
                 ", numberOfTicketsPurchased=" + numberOfTicketsPurchased +
                 '}';
     }
@@ -53,7 +53,7 @@ public class Purchase {
         Purchase purchase = (Purchase) o;
 
         if (purchaseId != purchase.purchaseId) return false;
-        if (memberId != purchase.memberId) return false;
+        if (playerId != purchase.playerId) return false;
         return numberOfTicketsPurchased == purchase.numberOfTicketsPurchased;
 
     }
@@ -61,7 +61,7 @@ public class Purchase {
     @Override
     public int hashCode() {
         int result = (int) (purchaseId ^ (purchaseId >>> 32));
-        result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        result = 31 * result + (int) (playerId ^ (playerId >>> 32));
         result = 31 * result + numberOfTicketsPurchased;
         return result;
     }

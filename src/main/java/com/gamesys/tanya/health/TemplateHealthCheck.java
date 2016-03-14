@@ -12,11 +12,11 @@ public class TemplateHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        if (PurchaseDB.getCount() == 0) {
-            return Result.unhealthy("No persons in DB! Version: " +
+        if (PurchaseDB.getTotalCount() == 0) {
+            return Result.unhealthy("No purchases in DB! Version: " +
                     this.version);
         }
         return Result.healthy("OK with version: " + this.version +
-                ". Persons count: " + PurchaseDB.getCount());
+                ". Purchases count: " + PurchaseDB.getTotalCount());
     }
 }

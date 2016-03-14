@@ -1,6 +1,5 @@
-package com.gamesys.tanya;
+package com.gamesys.tanya.api;
 
-import com.gamesys.tanya.api.Purchase;
 import com.gamesys.tanya.logic.PurchaseDB;
 import org.junit.*;
 
@@ -25,9 +24,9 @@ public class PurchaseUTest {
     }
 
     @Test
-    public void testGetMemberId() {
-        purchase.setMemberId(456);
-        Assert.assertTrue(purchase.getMemberId() == 456);
+    public void testGetPlayerId() {
+        purchase.setPlayerId(456);
+        Assert.assertEquals(456, purchase.getPlayerId());
     }
 
     @Test
@@ -37,7 +36,7 @@ public class PurchaseUTest {
     }
 
     @Test
-    public void testEquals() {
+    public void testEqualsAndHashcode() {
         Purchase purchase = new Purchase(22, 456, 2);
         Purchase samePurchase = new Purchase(22, 456, 2);
         Purchase similarPurchase = new Purchase(333, 789, 1);

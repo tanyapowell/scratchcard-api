@@ -1,106 +1,112 @@
 package com.gamesys.tanya.logic;
 
 import com.gamesys.tanya.api.Purchase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-import java.util.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.Is.is;
 
 public class PurchaseDBUTest {
-    private PurchaseDB db;
+    private static PurchaseDB database;
 
     @Before
-    public void setUp() {
-        db = new PurchaseDB();
+    public void setUp() throws SQLException {
+        database = new PurchaseDB();
+        database.createTable();
     }
 
     @After
-    public void tearDown() {
-        db.removeAllPurchases();
+    public void tearDown() throws SQLException {
+        database.dropTable();
     }
 
     @Test
-    public void testIsMapEmpty() {
-        Assert.assertThat(db.isEmpty(), is(true));
+    public void testDatabaseIsEmpty() throws SQLException {
+        Assert.assertThat(database.isEmpty(), is(true));
     }
 
     @Test
-    public void testMapIsNotEmpty() {
-        Purchase purchase = new Purchase(1, 123, 3);
-        db.savePurchase(purchase);
-        Assert.assertThat(db.isEmpty(), is(false));
+    public void testSavingPurchase() throws SQLException {
+        Purchase purchase = new Purchase(123, 789, 55);
+        PurchaseDB.save(purchase);
+
+        Assert.assertThat(database.isEmpty(), is(false));
     }
 
     @Test
-    public void saveNewPurchase(){
-        Purchase purchase = new Purchase(1, 123, 3);
-        db.savePurchase(purchase);
-        Assert.assertThat(db.isEmpty(), is(false));
+    public void testGetAll() throws SQLException {
+        Purchase purchase1 = new Purchase(123, 789, 4);
+        Purchase purchase2 = new Purchase(456, 325, 5);
+        Purchase purchase3 = new Purchase(754, 789, 3);
+        Purchase purchase4 = new Purchase(312, 789, 3);
+        Purchase purchase5 = new Purchase(985, 789, 3);
+        Purchase purchase6 = new Purchase(787, 789, 3);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+        PurchaseDB.save(purchase3);
+        PurchaseDB.save(purchase4);
+        PurchaseDB.save(purchase5);
+        PurchaseDB.save(purchase6);
+
+        List<Purchase> list = new ArrayList<>();
+        list.add(purchase1);
+        list.add(purchase2);
+        list.add(purchase3);
+        list.add(purchase4);
+        list.add(purchase5);
+        list.add(purchase6);
+
+        Assert.assertTrue(list.containsAll(database.getAll()) && database.getAll().containsAll(list));
     }
 
     @Test
-    public void testHowManyItemsInMap() {
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(22, 456, 2);
-        Purchase purchase3 = new Purchase(333, 789, 1);
-        db.savePurchase(purchase1);
-        db.savePurchase(purchase2);
-        db.savePurchase(purchase3);
-        Assert.assertEquals(db.getCount(), 3);
+    public void testGetByPlayerID() throws SQLException {
+        Purchase purchase1 = new Purchase(123, 789, 4);
+        Purchase purchase2 = new Purchase(456, 325, 5);
+        Purchase purchase3 = new Purchase(1001, 789, 3);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+        PurchaseDB.save(purchase3);
+
+        List<Purchase> list = new ArrayList<>();
+        list.add(purchase1);
+        list.add(purchase3);
+
+        Assert.assertTrue(list.containsAll(database.getByPlayer(789)) && database.getByPlayer(789).containsAll(list));
     }
 
     @Test
-    public void testKeyExists() {
-        Purchase purchase = new Purchase(1, 123, 3);
-        db.savePurchase(purchase);
-        Assert.assertTrue(db.doesIdExist(1));
-    }
+    public void testGetDatabaseCount() throws SQLException {
+        Purchase purchase1 = new Purchase(123, 789, 4);
+        Purchase purchase2 = new Purchase(456, 325, 5);
+        Purchase purchase3 = new Purchase(789, 789, 3);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+        PurchaseDB.save(purchase3);
 
-    @Test
-    public void testKeyDoesntExist() {
-        Assert.assertFalse(db.doesIdExist(1));
-    }
-
-    @Test
-    public void testPurchaseIdNotInDB(){
-        Assert.assertEquals("Purchase doesn't exist in DB", db.getByPurchaseId(2));
-    }
-
-    @Test
-    public void testGetPurchaseById(){
-        Purchase purchase = new Purchase(1, 123, 3);
-        db.savePurchase(purchase);
-        Assert.assertEquals("Purchase{purchaseId=1, memberId=123, numberOfTicketsPurchased=3}", db.getByPurchaseId(1));
-    }
-
-    @Test
-    public void testGetAllPurchases(){
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(22, 456, 2);
-        Purchase purchase3 = new Purchase(333, 789, 1);
-        db.savePurchase(purchase1);
-        db.savePurchase(purchase2);
-        db.savePurchase(purchase3);
-
-        List<Purchase> list = new ArrayList<Purchase>();
+        List<Purchase> list = new ArrayList<>();
         list.add(purchase1);
         list.add(purchase2);
         list.add(purchase3);
 
-        Assert.assertEquals(list, db.getAll());
+        Assert.assertEquals(list.size(), database.getTotalCount());
     }
 
-//    TODO - Fix this
     @Test
-    public void testForDuplicatedKeys(){
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(1, 123, 3);
-        db.savePurchase(purchase1);
-        db.savePurchase(purchase2);
-        Assert.assertTrue(db.doesIdExist(1));
+    public void testGetByID() throws SQLException {
+        Purchase purchase1 = new Purchase(123, 789, 4);
+        Purchase purchase2 = new Purchase(456, 325, 5);
+        Purchase purchase3 = new Purchase(1001, 789, 3);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+        PurchaseDB.save(purchase3);
+
+        List<Purchase> list = new ArrayList<>();
+        list.add(purchase1);
+
+        Assert.assertTrue(list.containsAll(database.getById(123)) && database.getById(123).containsAll(list));
     }
 }

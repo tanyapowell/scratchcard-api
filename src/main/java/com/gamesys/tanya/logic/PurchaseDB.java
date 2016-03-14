@@ -2,74 +2,211 @@ package com.gamesys.tanya.logic;
 
 import com.gamesys.tanya.api.Purchase;
 
-import java.util.*;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PurchaseDB {
-    private static Map<Long, Purchase> purchases = new HashMap<Long, Purchase>();
+public class PurchaseDB extends DbConnections {
+    public void removeAll() throws SQLException {
+        PreparedStatement truncateStatement = null;
 
-    public static void savePurchase(Purchase purchase) {
-        if(doesIdExist(purchase.getPurchaseId()) != true) {
-            purchases.put(purchase.getPurchaseId(), purchase);
-        }
-        else {
-            System.out.println("Key already exists");
+        String removeAll = "TRUNCATE TABLE PURCHASE";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            truncateStatement = connection.prepareStatement(removeAll);
+            truncateStatement.close();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
         }
     }
 
-    public static Purchase getByMemberId(Purchase memberId) {
-        return purchases.get(memberId);
+    public void createTable() throws SQLException {
+        Statement createStatement = null;
+
+//        TODO update once foreign keys can be added
+//        String createTable = "CREATE TABLE purchase(id BIGINT PRIMARY KEY AUTO_INCREMENT, FOREIGN KEY(id) REFERENCES player(id), numberOfPurchases INT);";
+        String createTable = "CREATE TABLE PURCHASE(id BIGINT PRIMARY KEY, playerID BIGINT, numberOfPurchases INT);";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            createStatement = connection.createStatement();
+            createStatement.execute(createTable);
+            createStatement.close();
+            connection.commit();
+            System.out.println("Purchase table has been created\n");
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
     }
 
-    public static List<Purchase> getAll() {
-        List<Purchase> result = new ArrayList<Purchase>();
-        for (Long key : purchases.keySet()) {
-            result.add(purchases.get(key));
+    public void dropTable() throws SQLException {
+        Statement dropStatement = null;
+
+        String dropTable = "DROP TABLE PURCHASE;";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            dropStatement = connection.createStatement();
+            dropStatement.execute(dropTable);
+            dropStatement.close();
+            connection.commit();
+            System.out.println("Purchase table has been dropped");
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
         }
-        return result;
     }
 
-    public static int getCount() {
-        return purchases.size();
+    public static String save(Purchase purchase) throws SQLException {
+        String purch = "";
+        PreparedStatement insertStatement = null;
+        long id = purchase.getPurchaseId();
+        long player = purchase.getPlayerId();
+        int noOfTickets = purchase.getNumberOfTicketsPurchased();
+
+        String insertQuery = "INSERT INTO PURCHASE(id, playerID, numberOfPurchases) VALUES(?, ?, ?)";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            insertStatement = connection.prepareStatement(insertQuery);
+            insertStatement.setLong(1, id);
+            insertStatement.setLong(2, player);
+            insertStatement.setInt(3, noOfTickets);
+            insertStatement.executeUpdate();
+            insertStatement.close();
+
+            connection.commit();
+
+            purch = "Purchase has been saved";
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return purch;
     }
 
-    public boolean isEmpty() {
-        boolean result;
+    public boolean isEmpty() throws SQLException {
+        boolean isEmpty;
+        int tableCounter = getTotalCount();
 
-        if (purchases.isEmpty()) {
-            result = true;
-        }
-        else {
-            result = false;
-        }
-        return result;
-    }
-
-    public static boolean doesIdExist(long purchaseId) {
-        boolean result;
-
-        if (purchases.containsKey(purchaseId)) {
-            result = true;
-        }
-        else {
-            result = false;
-        }
-        return result;
-    }
-
-    public static String getByPurchaseId(long purchaseId) {
-        String result = "";
-        Purchase value = purchases.get(purchaseId);
-
-        if (value != null) {
-            result = value.toString();
+        if (tableCounter > 0) {
+            isEmpty = false;
         } else {
-            result = "Purchase doesn't exist in DB";
+            isEmpty = true;
         }
 
-        return result;
+        return isEmpty;
     }
 
-    public void removeAllPurchases(){
-        purchases.clear();
+    public static List<Purchase> getByPlayer(long player) throws SQLException {
+        List<Purchase> list = new ArrayList<>();
+        PreparedStatement statement = null;
+
+        String query = "SELECT * FROM PURCHASE WHERE playerID = ?";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query);
+            statement.setLong(1, player);
+            ResultSet result = statement.executeQuery();
+
+            while (result.next()) {
+                Purchase purchase1 = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
+                if (result.getLong(2) == player) {
+                    list.add(purchase1);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return list;
     }
+
+    public static List<Purchase> getAll() throws SQLException {
+        List<Purchase> list = new ArrayList<>();
+        Statement statement = null;
+        String query = "SELECT * FROM PURCHASE";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+
+            while (result.next()) {
+                Purchase purchase = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
+                list.add(purchase);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+        return list;
+    }
+
+    public static int getTotalCount() throws SQLException {
+        Statement statement = null;
+        String query = "SELECT COUNT(*) FROM PURCHASE";
+        int counter = 0;
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(query);
+
+            for (; set.next(); ) {
+                counter = Integer.parseInt(set.getString(1));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return counter;
+    }
+
+    public static List<Purchase> getById(long purchaseId) throws SQLException {
+        List<Purchase> list = new ArrayList<>();
+        PreparedStatement statement = null;
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement("SELECT * FROM PURCHASE WHERE id = ?");
+
+            statement.setLong(1, purchaseId);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+
+                Purchase purchase1 = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
+                if (result.getInt(1) == purchaseId) {
+                    list.add(purchase1);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return list;
+    }
+
 }
