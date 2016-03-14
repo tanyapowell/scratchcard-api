@@ -15,12 +15,12 @@ public class GameUTest {
     @After
     public void tearDown() {}
 
-//    @Test
-//    public void testGetResults(){
-//        game = new Game(123, 96521);
-//        boolean bool = game.getResult();
-//        Assert.assertEquals(true, bool);
-//    }
+    @Test
+    public void testGetResults(){
+        game = new Game(123, 96521);
+        boolean bool = game.getResult();
+        Assert.assertEquals(true, bool);
+    }
 
     @Test
     public void testSetPlayerId(){
