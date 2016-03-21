@@ -14,6 +14,18 @@ import java.sql.SQLException;
 public class GameResource {
     public GameResource(GameDB db) throws SQLException {
         db.createTable();
+        Game game1 = new Game(1234, 453241);
+        Game game2 = new Game(2315, 123241);
+        Game game3 = new Game(3890, 563241);
+        Game game4 = new Game(4255, 695379);
+        Game game5 = new Game(6932, 897642);
+        Game game6 = new Game(8003, 789649);
+        GameDB.saveGameResults(game1);
+        GameDB.saveGameResults(game2);
+        GameDB.saveGameResults(game3);
+        GameDB.saveGameResults(game4);
+        GameDB.saveGameResults(game5);
+        GameDB.saveGameResults(game6);
     }
 
     @GET
@@ -37,7 +49,7 @@ public class GameResource {
 
     @GET
     @Timed
-    @Path("/get_id/{id}")
+    @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getById(@PathParam("id") int id) throws SQLException {
         Gson gson = new Gson();
@@ -48,7 +60,7 @@ public class GameResource {
 
     @GET
     @Timed
-    @Path("/get_player/{playerId}")
+    @Path("/player/{playerId}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getByPlayer(@PathParam("playerId") long id) throws SQLException {
         Gson gson = new Gson();

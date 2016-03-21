@@ -15,12 +15,12 @@ public class GameUTest {
     @After
     public void tearDown() {}
 
-    @Test
-    public void testGetResults(){
-        game = new Game(123, 96521);
-        boolean bool = game.getResult();
-        Assert.assertEquals(true, bool);
-    }
+//    @Test
+//    public void testGetResults(){
+//        game = new Game(123, 96521);
+//        boolean bool = game.getResult();
+//        Assert.assertEquals(true, bool);
+//    }
 
     @Test
     public void testSetPlayerId(){
@@ -50,18 +50,18 @@ public class GameUTest {
         Assert.assertEquals(gameId, 548);
     }
 
-    @Test
-    public void testEqualsAndHashcode(){
-        Game game = new Game(1, 123);
-        Game sameGame = new Game(1, 123);
-        Game similarGame = new Game(2, 123);
-
-        Assert.assertTrue(game.equals(sameGame));
-        Assert.assertTrue(game.hashCode() == sameGame.hashCode());
-
-        Assert.assertFalse(game.equals(null));
-        Assert.assertFalse(game.equals(similarGame));
-        Assert.assertTrue(game.hashCode() != similarGame.hashCode());
-    }
+//    @Test
+//    public void testEqualsAndHashcode(){
+//        Game game = new Game(1, 123);
+//        Game sameGame = new Game(1, 123);
+//        Game similarGame = new Game(2, 123);
+//
+//        Assert.assertTrue(game.equals(sameGame));
+//        Assert.assertTrue(game.hashCode() == sameGame.hashCode());
+//
+//        Assert.assertFalse(game.equals(null));
+//        Assert.assertFalse(game.equals(similarGame));
+//        Assert.assertTrue(game.hashCode() != similarGame.hashCode());
+//    }
 
 }

@@ -109,4 +109,20 @@ public class PurchaseDBUTest {
 
         Assert.assertTrue(list.containsAll(database.getById(123)) && database.getById(123).containsAll(list));
     }
+
+    @Test
+    public void testRemovingPurchase() throws SQLException {
+        Purchase purchase1 = new Purchase(123, 789, 4);
+        Purchase purchase2 = new Purchase(456, 325, 5);
+        Purchase purchase3 = new Purchase(1001, 789, 3);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+        PurchaseDB.save(purchase3);
+        System.out.println("Before: "+PurchaseDB.getAll());
+
+        PurchaseDB.removeSinglePurchase((long)123);
+
+        System.out.println("After: "+PurchaseDB.getAll());
+        Assert.assertEquals("Purchase 123 has been removed", PurchaseDB.removeSinglePurchase((long)123));
+    }
 }

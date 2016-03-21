@@ -20,7 +20,7 @@ public class PurchaseResourceUTest {
     @Before
     public void setUp() throws SQLException {
         database = new PurchaseDB();
-        database.createTable();
+//        database.createTable();
         resource = new PurchaseResource(database);
     }
 
@@ -35,11 +35,11 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testGetAll() throws SQLException {
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(22, 456, 2);
-        Purchase purchase3 = new Purchase(444, 789, 1);
-        Purchase purchase4 = new Purchase(55, 789, 1);
-        Purchase purchase5 = new Purchase(6, 789, 1);
+        Purchase purchase1 = new Purchase(1111, 123, 3);
+        Purchase purchase2 = new Purchase(2222, 456, 2);
+        Purchase purchase3 = new Purchase(4444, 789, 1);
+        Purchase purchase4 = new Purchase(5555, 789, 1);
+        Purchase purchase5 = new Purchase(666, 789, 1);
         PurchaseDB.save(purchase1);
         PurchaseDB.save(purchase2);
         PurchaseDB.save(purchase3);
@@ -79,9 +79,9 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testGetPlayerById() throws SQLException {
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(22, 456, 2);
-        Purchase purchase3 = new Purchase(444, 789, 1);
+        Purchase purchase1 = new Purchase(11111, 123, 3);
+        Purchase purchase2 = new Purchase(22222, 456, 2);
+        Purchase purchase3 = new Purchase(44444, 789, 1);
         PurchaseDB.save(purchase1);
         PurchaseDB.save(purchase2);
         PurchaseDB.save(purchase3);
@@ -101,5 +101,16 @@ public class PurchaseResourceUTest {
         String save = resource.addNewPurchase(purchase);
 
         Assertions.assertThat(save).isEqualTo("Purchase has been saved");
+    }
+
+    @Test
+    public void testRemovePurchase() throws SQLException {
+        Purchase purchase1 = new Purchase(1, 123, 3);
+        Purchase purchase2 = new Purchase(2, 234, 6);
+        PurchaseDB.save(purchase1);
+        PurchaseDB.save(purchase2);
+
+        String remove = resource.removePurchase(1);
+        Assertions.assertThat(remove).isEqualTo(String.format("Purchase %d has been removed", 1));
     }
 }

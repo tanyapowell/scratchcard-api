@@ -4,6 +4,7 @@ import com.gamesys.tanya.api.Purchase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PurchaseDB extends DbConnections {
@@ -209,4 +210,30 @@ public class PurchaseDB extends DbConnections {
         return list;
     }
 
+    public static String removeSinglePurchase(long purchaseId) throws SQLException {
+        String removedPurchase = "";
+        PreparedStatement statement = null;
+
+        String deleteQuery = "DELETE FROM PURCHASE WHERE id = ?";
+
+        try (Connection connection = getDBConnection()) {
+
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(deleteQuery);
+            statement.setLong(1, purchaseId);
+            statement.executeUpdate();
+            statement.close();
+
+            connection.commit();
+
+            removedPurchase = String.format("Purchase %d has been removed", purchaseId);
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return removedPurchase;
+    }
 }
