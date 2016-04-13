@@ -1,27 +1,22 @@
 package com.gamesys.tanya.resources;
 
-import com.gamesys.tanya.api.Game;
-import com.gamesys.tanya.logic.GameDB;
-import com.google.gson.Gson;
-import org.fest.assertions.Assertions;
+import com.gamesys.tanya.logic.GameDAO;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameResourceUTest {
     private GameResource resource;
-    private GameDB database;
+    private GameDAO database;
+//    HttpClient client = new HttpClient();
 
     @Before
-    public void setUp() throws SQLException {
-        database = new GameDB();
-//        database.createTable();
+    public void setUp() throws SQLException, IOException {
+        database = new GameDAO();
         resource = new GameResource(database);
+
     }
 
     @After
@@ -39,12 +34,12 @@ public class GameResourceUTest {
 //        Game game4 = new Game(4255, 695379);
 //        Game game5 = new Game(6932, 897642);
 //        Game game6 = new Game(8003, 789649);
-//        GameDB.saveGameResults(game1);
-//        GameDB.saveGameResults(game2);
-//        GameDB.saveGameResults(game3);
-//        GameDB.saveGameResults(game4);
-//        GameDB.saveGameResults(game5);
-//        GameDB.saveGameResults(game6);
+//        GameDAO.saveGameResults(game1);
+//        GameDAO.saveGameResults(game2);
+//        GameDAO.saveGameResults(game3);
+//        GameDAO.saveGameResults(game4);
+//        GameDAO.saveGameResults(game5);
+//        GameDAO.saveGameResults(game6);
 //
 //        list.add(game1);
 //        list.add(game2);
@@ -59,14 +54,16 @@ public class GameResourceUTest {
 //        Assert.assertEquals(jsonList, resource.getGames());
 //    }
 
-    @Test
-    public void testSavingGame() throws SQLException {
-        Game game = new Game(5555, 453241);
-        String save = resource.addNewGame(game);
+//    @Test
+//    public void testSavingGame() throws SQLException {
+//        Game game = new Game(5555, 453241);
+//        String save = resource.addNewGame(5555, game.getPlayerId());
+//
+//        Assertions.assertThat(save).isEqualTo("Game has been saved");
 
-        Assertions.assertThat(save).isEqualTo("Game has been saved");
-
-    }
+//        Response response = this.client.get("http://localhost:8080/games/save");
+//        Assert.assertEquals(getResponseDetails(response), 200, response.getStatus());
+//    }
 
 //    @Test
 //    public void testGetByGameID() throws SQLException {
@@ -78,12 +75,12 @@ public class GameResourceUTest {
 //        Game game4 = new Game(4255, 695379);
 //        Game game5 = new Game(6932, 897642);
 //        Game game6 = new Game(8003, 789649);
-//        GameDB.saveGameResults(game1);
-//        GameDB.saveGameResults(game2);
-//        GameDB.saveGameResults(game3);
-//        GameDB.saveGameResults(game4);
-//        GameDB.saveGameResults(game5);
-//        GameDB.saveGameResults(game6);
+//        GameDAO.saveGameResults(game1);
+//        GameDAO.saveGameResults(game2);
+//        GameDAO.saveGameResults(game3);
+//        GameDAO.saveGameResults(game4);
+//        GameDAO.saveGameResults(game5);
+//        GameDAO.saveGameResults(game6);
 //
 //        list.add(game1);
 //
@@ -104,12 +101,12 @@ public class GameResourceUTest {
 //        Game game4 = new Game(4255, 695379);
 //        Game game5 = new Game(6932, 897642);
 //        Game game6 = new Game(8003, 789649);
-//        GameDB.saveGameResults(game1);
-//        GameDB.saveGameResults(game2);
-//        GameDB.saveGameResults(game3);
-//        GameDB.saveGameResults(game4);
-//        GameDB.saveGameResults(game5);
-//        GameDB.saveGameResults(game6);
+//        GameDAO.saveGameResults(game1);
+//        GameDAO.saveGameResults(game2);
+//        GameDAO.saveGameResults(game3);
+//        GameDAO.saveGameResults(game4);
+//        GameDAO.saveGameResults(game5);
+//        GameDAO.saveGameResults(game6);
 //
 //        list.add(game1);
 //
@@ -117,5 +114,16 @@ public class GameResourceUTest {
 //        String jsonList = gson.toJson(list);
 //
 //        Assert.assertEquals(jsonList, resource.getByPlayer(453241));
+//    }
+
+//    @Test
+//    public void testRemoveGame() throws SQLException {
+//        Game game1 = new Game(12345, 453241);
+//        Game game2 = new Game(23157, 123241);
+//        GameDAO.saveGameResults(game1);
+//        GameDAO.saveGameResults(game2);
+//
+//        String remove = resource.removeGame(12345);
+//        Assertions.assertThat(remove).isEqualTo(String.format("Game %d has been removed", 12345));
 //    }
 }

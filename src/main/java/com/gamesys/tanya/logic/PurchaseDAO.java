@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PurchaseDB extends DbConnections {
+public class PurchaseDAO extends DbConnections {
     public void removeAll() throws SQLException {
         PreparedStatement truncateStatement = null;
 
@@ -30,7 +30,7 @@ public class PurchaseDB extends DbConnections {
 
 //        TODO update once foreign keys can be added
 //        String createTable = "CREATE TABLE purchase(id BIGINT PRIMARY KEY AUTO_INCREMENT, FOREIGN KEY(id) REFERENCES player(id), numberOfPurchases INT);";
-        String createTable = "CREATE TABLE PURCHASE(id BIGINT PRIMARY KEY, playerID BIGINT, numberOfPurchases INT);";
+        String createTable = "CREATE TABLE PURCHASE(id BIGINT PRIMARY KEY AUTO_INCREMENT, playerID BIGINT, numberOfPurchases INT);";
 
         try (Connection connection = getDBConnection()) {
             connection.setAutoCommit(false);
@@ -66,33 +66,33 @@ public class PurchaseDB extends DbConnections {
     }
 
     public static String save(Purchase purchase) throws SQLException {
-        String purch = "";
+        String purchaseString = "";
         PreparedStatement insertStatement = null;
-        long id = purchase.getPurchaseId();
+//        long id = purchase.getPurchaseId();
         long player = purchase.getPlayerId();
         int noOfTickets = purchase.getNumberOfTicketsPurchased();
 
-        String insertQuery = "INSERT INTO PURCHASE(id, playerID, numberOfPurchases) VALUES(?, ?, ?)";
+        String insertQuery = "INSERT INTO PURCHASE(playerID, numberOfPurchases) VALUES(?, ?)";
 
         try (Connection connection = getDBConnection()) {
             connection.setAutoCommit(false);
             insertStatement = connection.prepareStatement(insertQuery);
-            insertStatement.setLong(1, id);
-            insertStatement.setLong(2, player);
-            insertStatement.setInt(3, noOfTickets);
+//            insertStatement.setLong(1, id);
+            insertStatement.setLong(1, player);
+            insertStatement.setInt(2, noOfTickets);
             insertStatement.executeUpdate();
             insertStatement.close();
 
             connection.commit();
 
-            purch = "Purchase has been saved";
+            purchaseString = "Purchase has been saved";
         } catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
         } finally {
             getDBConnection().close();
         }
 
-        return purch;
+        return purchaseString;
     }
 
     public boolean isEmpty() throws SQLException {
@@ -121,9 +121,9 @@ public class PurchaseDB extends DbConnections {
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
-                Purchase purchase1 = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
+                Purchase purchase = new Purchase(result.getLong(2), result.getInt(3));
                 if (result.getLong(2) == player) {
-                    list.add(purchase1);
+                    list.add(purchase);
                 }
             }
 
@@ -148,7 +148,7 @@ public class PurchaseDB extends DbConnections {
             ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
-                Purchase purchase = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
+                Purchase purchase = new Purchase(result.getLong(2), result.getInt(3));
                 list.add(purchase);
             }
 
@@ -193,11 +193,11 @@ public class PurchaseDB extends DbConnections {
 
             statement.setLong(1, purchaseId);
             ResultSet result = statement.executeQuery();
-            while (result.next()) {
 
-                Purchase purchase1 = new Purchase(result.getInt(1), result.getLong(2), result.getInt(3));
-                if (result.getInt(1) == purchaseId) {
-                    list.add(purchase1);
+            while (result.next()) {
+                Purchase purchase = new Purchase(result.getLong(2), result.getInt(3));
+                if (result.getLong(1) == purchaseId) {
+                    list.add(purchase);
                 }
             }
 

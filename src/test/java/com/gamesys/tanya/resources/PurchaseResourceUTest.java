@@ -1,7 +1,7 @@
 package com.gamesys.tanya.resources;
 
 import com.gamesys.tanya.api.Purchase;
-import com.gamesys.tanya.logic.PurchaseDB;
+import com.gamesys.tanya.logic.PurchaseDAO;
 import com.google.gson.Gson;
 import org.fest.assertions.Assertions;
 import org.junit.After;
@@ -15,11 +15,11 @@ import java.util.List;
 
 public class PurchaseResourceUTest {
     private PurchaseResource resource;
-    private PurchaseDB database;
+    private PurchaseDAO database;
 
     @Before
     public void setUp() throws SQLException {
-        database = new PurchaseDB();
+        database = new PurchaseDAO();
 //        database.createTable();
         resource = new PurchaseResource(database);
     }
@@ -35,16 +35,16 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testGetAll() throws SQLException {
-        Purchase purchase1 = new Purchase(1111, 123, 3);
-        Purchase purchase2 = new Purchase(2222, 456, 2);
-        Purchase purchase3 = new Purchase(4444, 789, 1);
-        Purchase purchase4 = new Purchase(5555, 789, 1);
-        Purchase purchase5 = new Purchase(666, 789, 1);
-        PurchaseDB.save(purchase1);
-        PurchaseDB.save(purchase2);
-        PurchaseDB.save(purchase3);
-        PurchaseDB.save(purchase4);
-        PurchaseDB.save(purchase5);
+        Purchase purchase1 = new Purchase(123, 3);
+        Purchase purchase2 = new Purchase(456, 2);
+        Purchase purchase3 = new Purchase(789, 1);
+        Purchase purchase4 = new Purchase(789, 1);
+        Purchase purchase5 = new Purchase(789, 1);
+        PurchaseDAO.save(purchase1);
+        PurchaseDAO.save(purchase2);
+        PurchaseDAO.save(purchase3);
+        PurchaseDAO.save(purchase4);
+        PurchaseDAO.save(purchase5);
 
         List<Purchase> list = new ArrayList<>();
         list.add(purchase1);
@@ -61,12 +61,12 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testGetPurchaseById() throws SQLException {
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(22, 456, 2);
-        Purchase purchase3 = new Purchase(444, 789, 1);
-        PurchaseDB.save(purchase1);
-        PurchaseDB.save(purchase2);
-        PurchaseDB.save(purchase3);
+        Purchase purchase1 = new Purchase(123, 3);
+        Purchase purchase2 = new Purchase(456, 2);
+        Purchase purchase3 = new Purchase(789, 1);
+        PurchaseDAO.save(purchase1);
+        PurchaseDAO.save(purchase2);
+        PurchaseDAO.save(purchase3);
 
         List<Purchase> list = new ArrayList<>();
         list.add(purchase2);
@@ -79,12 +79,12 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testGetPlayerById() throws SQLException {
-        Purchase purchase1 = new Purchase(11111, 123, 3);
-        Purchase purchase2 = new Purchase(22222, 456, 2);
-        Purchase purchase3 = new Purchase(44444, 789, 1);
-        PurchaseDB.save(purchase1);
-        PurchaseDB.save(purchase2);
-        PurchaseDB.save(purchase3);
+        Purchase purchase1 = new Purchase(123, 3);
+        Purchase purchase2 = new Purchase(456, 2);
+        Purchase purchase3 = new Purchase(789, 1);
+        PurchaseDAO.save(purchase1);
+        PurchaseDAO.save(purchase2);
+        PurchaseDAO.save(purchase3);
 
         List<Purchase> list = new ArrayList<>();
         list.add(purchase3);
@@ -97,7 +97,7 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testSavePurchase() throws SQLException {
-        Purchase purchase = new Purchase(1, 123, 3);
+        Purchase purchase = new Purchase(123, 3);
         String save = resource.addNewPurchase(purchase);
 
         Assertions.assertThat(save).isEqualTo("Purchase has been saved");
@@ -105,10 +105,10 @@ public class PurchaseResourceUTest {
 
     @Test
     public void testRemovePurchase() throws SQLException {
-        Purchase purchase1 = new Purchase(1, 123, 3);
-        Purchase purchase2 = new Purchase(2, 234, 6);
-        PurchaseDB.save(purchase1);
-        PurchaseDB.save(purchase2);
+        Purchase purchase1 = new Purchase(123, 3);
+        Purchase purchase2 = new Purchase(234, 6);
+        PurchaseDAO.save(purchase1);
+        PurchaseDAO.save(purchase2);
 
         String remove = resource.removePurchase(1);
         Assertions.assertThat(remove).isEqualTo(String.format("Purchase %d has been removed", 1));

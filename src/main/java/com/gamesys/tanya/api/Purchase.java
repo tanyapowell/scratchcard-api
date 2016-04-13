@@ -3,25 +3,14 @@ package com.gamesys.tanya.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Purchase {
-    private long purchaseId;
     private long playerId;
     private int numberOfTicketsPurchased;
 
     public Purchase() {}
 
-    public Purchase(int purchaseId, long playerId, int numberOfTicketsPurchased){
-        this.purchaseId = purchaseId;
+    public Purchase(long playerId, int numberOfTicketsPurchased){
         this.playerId = playerId;
         this.numberOfTicketsPurchased = numberOfTicketsPurchased;
-    }
-
-    @JsonProperty
-    public long getPurchaseId() {
-        return purchaseId;
-    }
-
-    public void setPurchaseId(long purchaseId) {
-        this.purchaseId = purchaseId;
     }
 
     @JsonProperty
@@ -36,13 +25,9 @@ public class Purchase {
         this.numberOfTicketsPurchased = numberOfTicketsPurchased;
     }
 
-    @Override
-    public String toString() {
-        return "Purchase{" +
-                "purchaseId=" + purchaseId +
-                ", playerId=" + playerId +
-                ", numberOfTicketsPurchased=" + numberOfTicketsPurchased +
-                '}';
+    @JsonProperty
+    public void buyGameTickets(int tickets){
+        setNumberOfTicketsPurchased(tickets);
     }
 
     @Override
@@ -52,7 +37,6 @@ public class Purchase {
 
         Purchase purchase = (Purchase) o;
 
-        if (purchaseId != purchase.purchaseId) return false;
         if (playerId != purchase.playerId) return false;
         return numberOfTicketsPurchased == purchase.numberOfTicketsPurchased;
 
@@ -60,9 +44,16 @@ public class Purchase {
 
     @Override
     public int hashCode() {
-        int result = (int) (purchaseId ^ (purchaseId >>> 32));
-        result = 31 * result + (int) (playerId ^ (playerId >>> 32));
+        int result = (int) (playerId ^ (playerId >>> 32));
         result = 31 * result + numberOfTicketsPurchased;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "playerId=" + playerId +
+                ", numberOfTicketsPurchased=" + numberOfTicketsPurchased +
+                '}';
     }
 }

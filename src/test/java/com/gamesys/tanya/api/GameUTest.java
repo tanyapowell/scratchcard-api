@@ -9,59 +9,68 @@ public class GameUTest {
     Game game;
 
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     @After
     public void tearDown() {}
 
-//    @Test
-//    public void testGetResults(){
-//        game = new Game(123, 96521);
-//        boolean bool = game.getResult();
-//        Assert.assertEquals(true, bool);
-//    }
-
     @Test
-    public void testSetPlayerId(){
-        game = new Game(0,0);
-        game.setPlayerId(656);
-        Assert.assertTrue(game.getPlayerId() == 656);
+    public void testWin(){
+        game = new Game(true);
+        boolean bool = game.getResult();
+        Assert.assertEquals(true, bool);
     }
 
     @Test
-    public void testGetPlayerId(){
-        game = new Game(459, 45695);
-        long playerId = game.getPlayerId();
-        Assert.assertEquals(playerId, 45695);
+    public void testLoss(){
+        game = new Game(false);
+        boolean bool = game.getResult();
+        Assert.assertEquals(false, bool);
+    }
+
+
+    @Test
+    public void testPlayerDoesNotHaveEnoughTicketsToPlay(){
+        game = new Game();
+        Player player = new Player("", "", 0, 0, 0, 0);
+        Assert.assertFalse(game.doesPlayerHaveEnoughTicketsToPlay(player));
     }
 
     @Test
-    public void testSetGameId(){
-        game = new Game(0,0);
-        game.setId(78909);
-        Assert.assertTrue(game.getId() == 78909);
+    public void testPlayerHasEnoughTicketsToPlay(){
+        game = new Game();
+        Player player = new Player("", "", 1, 0, 0, 0);
+        Assert.assertTrue(game.doesPlayerHaveEnoughTicketsToPlay(player));
     }
 
     @Test
-    public void testGetGameId(){
-        game = new Game(548, 45695);
-        long gameId = game.getId();
-        Assert.assertEquals(gameId, 548);
+    public void testNumberOfGamesPlayedHasIncrementedDuringGamePlay() {
+        game = new Game();
+        Player player = new Player("", "", 1, 0, 0, 0);
+        game.playGame(player);
+        Assert.assertEquals(1, player.getTotalNumberOfGamesPlayed());
     }
 
-//    @Test
-//    public void testEqualsAndHashcode(){
-//        Game game = new Game(1, 123);
-//        Game sameGame = new Game(1, 123);
-//        Game similarGame = new Game(2, 123);
-//
-//        Assert.assertTrue(game.equals(sameGame));
-//        Assert.assertTrue(game.hashCode() == sameGame.hashCode());
-//
-//        Assert.assertFalse(game.equals(null));
-//        Assert.assertFalse(game.equals(similarGame));
-//        Assert.assertTrue(game.hashCode() != similarGame.hashCode());
-//    }
+    @Test
+    public void testTotalNumberOfGamesDecrementDuringGamePlay(){
+        game = new Game();
+        Player player = new Player("", "", 1, 0, 0, 0);
+        game.playGame(player);
+        Assert.assertEquals(0, player.getTotalNumberOfGamesAvailableToPlay());
+    }
+
+    @Test
+    public void testEqualsAndHashcode(){
+        Game game = new Game(true);
+        Game sameGame = new Game(true);
+        Game similarGame = new Game(false);
+
+        Assert.assertTrue(game.equals(sameGame));
+        Assert.assertTrue(game.hashCode() == sameGame.hashCode());
+
+        Assert.assertFalse(game.equals(null));
+        Assert.assertFalse(game.equals(similarGame));
+        Assert.assertTrue(game.hashCode() != similarGame.hashCode());
+    }
 
 }

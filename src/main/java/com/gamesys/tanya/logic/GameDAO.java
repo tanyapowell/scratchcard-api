@@ -5,11 +5,11 @@ import com.gamesys.tanya.api.Game;
 import java.sql.*;
 import java.util.*;
 
-public class GameDB extends DbConnections {
+public class GameDAO extends DbConnections {
     public void createTable() throws SQLException {
         Statement createStatement = null;
 
-        String createTable = "CREATE TABLE GAME(id BIGINT PRIMARY KEY, playerID BIGINT, result BOOLEAN);";
+        String createTable = "CREATE TABLE GAME(id BIGINT PRIMARY KEY AUTO_INCREMENT, player_id BIGINT NOT NULL, FOREIGN KEY(player_id) REFERENCES PLAYER(id), result BOOLEAN)";
 
         try (Connection connection = getDBConnection()) {
             connection.setAutoCommit(false);
@@ -18,9 +18,32 @@ public class GameDB extends DbConnections {
             createStatement.close();
             connection.commit();
             System.out.println("Game table has been created\n");
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
-        } finally {
+        }
+        finally {
+            getDBConnection().close();
+        }
+    }
+
+    public void setTableIdToStartAt100() throws SQLException {
+        PreparedStatement statement = null;
+
+        String alterQuery = "ALTER TABLE GAME ALTER COLUMN id RESTART WITH 1000;";
+
+        try (Connection connection = getDBConnection()) {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(alterQuery);
+            statement.executeUpdate();
+            statement.close();
+
+            connection.commit();
+        }
+        catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        }
+        finally {
             getDBConnection().close();
         }
     }
@@ -47,27 +70,29 @@ public class GameDB extends DbConnections {
     public static String saveGameResults(Game game) throws SQLException {
         String saveGame = "";
         PreparedStatement insertStatement = null;
-        long id = game.getId();
         long player = game.getPlayerId();
         boolean result = game.getResult();
 
-        String insertQuery = "INSERT INTO GAME(id, playerID, result) VALUES(?, ?, ?)";
+//        String insertQuery = "INSERT INTO GAME(player_id, result) VALUES ((SELECT id FROM PLAYER WHERE id = ?), ?)";
+        String insertQuery = "INSERT INTO GAME(player_id, result) VALUES ((SELECT id FROM PLAYER WHERE id = 100), ?)";
 
         try (Connection connection = getDBConnection()) {
             connection.setAutoCommit(false);
             insertStatement = connection.prepareStatement(insertQuery);
-            insertStatement.setLong(1, id);
-            insertStatement.setLong(2, player);
-            insertStatement.setBoolean(3, result);
+//            insertStatement.setLong(1, player);
+//            insertStatement.setBoolean(2, result);
+            insertStatement.setBoolean(1, result);
             insertStatement.executeUpdate();
             insertStatement.close();
 
             connection.commit();
 
             saveGame = "Game has been saved";
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
-        } finally {
+        }
+        finally {
             getDBConnection().close();
         }
 
@@ -88,6 +113,7 @@ public class GameDB extends DbConnections {
                 counter = (resultSet.getInt(1));
             }
 
+            System.out.println(counter);
         } catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
         } finally {
@@ -96,10 +122,10 @@ public class GameDB extends DbConnections {
         return counter;
     }
 
-    public static List<Game> getByPlayerId(Long player) throws SQLException {
+    public static List<Game> getByPlayerId(long player) throws SQLException {
         List<Game> list = new ArrayList<>();
         PreparedStatement statement = null;
-        String query = "SELECT * FROM GAME WHERE playerID = ?";
+        String query = "SELECT * FROM GAME WHERE player_id = ?";
 
         try (Connection connection = getDBConnection()) {
             connection.setAutoCommit(false);
@@ -109,15 +135,18 @@ public class GameDB extends DbConnections {
 
             for (Game g : getAll()) {
                 while (result.next()) {
-
-                    Game game1 = new Game(result.getInt(1), result.getLong(2));
-                    list.add(game1);
+                    Game game1 = new Game();
+                    if(result.getLong(1) == player) {
+                        list.add(game1);
+                    }
                 }
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println("Exception Message " + e.getLocalizedMessage());
-        } finally {
+        }
+        finally {
             getDBConnection().close();
         }
         return list;
@@ -134,7 +163,7 @@ public class GameDB extends DbConnections {
             ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
-                Game game = new Game(result.getInt(1), result.getLong(2));
+                Game game = new Game();
                 list.add(game);
             }
 
@@ -159,9 +188,10 @@ public class GameDB extends DbConnections {
 
             for (Game g : getAll()) {
                 while (result.next()) {
-
-                    Game game1 = new Game(result.getInt(1), result.getLong(2));
-                    list.add(game1);
+                    if(result.getLong(1) == id){
+                        Game game = new Game();
+                        list.add(game);
+                    }
                 }
 
             }
@@ -172,5 +202,32 @@ public class GameDB extends DbConnections {
             getDBConnection().close();
         }
         return list;
+    }
+
+    public static String removeSingleGame(long gameId) throws SQLException {
+        String removedGame = "";
+        PreparedStatement statement = null;
+
+        String deleteQuery = "DELETE FROM GAME WHERE id = ?";
+
+        try (Connection connection = getDBConnection()) {
+
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(deleteQuery);
+            statement.setLong(1, gameId);
+            statement.executeUpdate();
+            statement.close();
+
+            connection.commit();
+
+            removedGame = String.format("Game %d has been removed", gameId);
+
+        } catch (SQLException e) {
+            System.out.println("Exception Message " + e.getLocalizedMessage());
+        } finally {
+            getDBConnection().close();
+        }
+
+        return removedGame;
     }
 }
