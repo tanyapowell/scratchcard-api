@@ -1,2 +1,4 @@
-# Bearded Robot Scratchcard API Reference
-Proposed references for Scratchcard API
+[![Build Status](https://travis-ci.org/tanyapowell/scratchcard-api.svg?branch=master)](https://travis-ci.org/tanyapowell/scratchcard-api) 
+
+# Scratchcard API Reference
+
