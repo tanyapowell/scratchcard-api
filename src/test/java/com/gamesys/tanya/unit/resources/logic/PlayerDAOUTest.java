@@ -1,6 +1,7 @@
-package com.gamesys.tanya.logic;
+package com.gamesys.tanya.unit.resources.logic;
 
 import com.gamesys.tanya.api.Player;
+import com.gamesys.tanya.logic.PlayerDAO;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,9 +69,6 @@ public class PlayerDAOUTest {
 
         List<Player> expectedList = new ArrayList<>();
         expectedList.add(player2);
-
-        System.out.println(expectedList);
-        System.out.println(playerTable.getByPlayerId(102));
 
         Assert.assertTrue(expectedList.containsAll(playerTable.getByPlayerId(101)) && playerTable.getByPlayerId(101).containsAll(expectedList));
     }

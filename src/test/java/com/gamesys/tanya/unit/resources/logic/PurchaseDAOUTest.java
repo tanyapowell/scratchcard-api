@@ -1,6 +1,7 @@
-package com.gamesys.tanya.logic;
+package com.gamesys.tanya.unit.resources.logic;
 
 import com.gamesys.tanya.api.Purchase;
+import com.gamesys.tanya.logic.PurchaseDAO;
 import org.junit.*;
 
 import java.sql.SQLException;

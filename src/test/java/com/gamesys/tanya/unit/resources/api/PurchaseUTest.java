@@ -1,5 +1,6 @@
-package com.gamesys.tanya.api;
+package com.gamesys.tanya.unit.resources.api;
 
+import com.gamesys.tanya.api.Purchase;
 import com.gamesys.tanya.logic.PurchaseDAO;
 import org.junit.*;
 

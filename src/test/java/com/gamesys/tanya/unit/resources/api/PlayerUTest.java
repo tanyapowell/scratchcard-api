@@ -1,5 +1,6 @@
-package com.gamesys.tanya.api;
+package com.gamesys.tanya.unit.resources.api;
 
+import com.gamesys.tanya.api.Player;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

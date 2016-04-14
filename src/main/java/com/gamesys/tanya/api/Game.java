@@ -11,13 +11,11 @@ public class Game {
     private long playerId;
     private boolean result;
 
-    // init for new Game
     public Game() {
         this.playerId = getPlayerId();
         this.result = getResult();
     }
 
-    // init for Game loaded from DB
     public Game(boolean result) {
         this.playerId = getPlayerId();
         this.result = result;
@@ -31,13 +29,7 @@ public class Game {
     @JsonProperty
     public boolean getResult() {
         Random random = new Random();
-
-        if (random.nextBoolean() == true) {
-            result = true;
-        } else {
-            result = false;
-        }
-        return result;
+        return random.nextBoolean();
     }
 
     @JsonProperty

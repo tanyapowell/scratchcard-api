@@ -1,6 +1,7 @@
-package com.gamesys.tanya.resources;
+package com.gamesys.tanya.unit.resources;
 
 import com.gamesys.tanya.logic.GameDAO;
+import com.gamesys.tanya.resources.GameResource;
 import org.junit.After;
 import org.junit.Before;
 

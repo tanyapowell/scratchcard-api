@@ -1,7 +1,8 @@
-package com.gamesys.tanya.resources;
+package com.gamesys.tanya.unit.resources;
 
 import com.gamesys.tanya.api.Purchase;
 import com.gamesys.tanya.logic.PurchaseDAO;
+import com.gamesys.tanya.resources.PurchaseResource;
 import com.google.gson.Gson;
 import org.fest.assertions.Assertions;
 import org.junit.After;

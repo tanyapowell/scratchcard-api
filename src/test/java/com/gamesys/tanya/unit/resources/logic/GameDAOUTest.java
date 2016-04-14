@@ -1,7 +1,9 @@
-package com.gamesys.tanya.logic;
+package com.gamesys.tanya.unit.resources.logic;
 
 import com.gamesys.tanya.api.Game;
 import com.gamesys.tanya.api.Player;
+import com.gamesys.tanya.logic.GameDAO;
+import com.gamesys.tanya.logic.PlayerDAO;
 import org.junit.*;
 
 import java.sql.SQLException;
@@ -16,7 +18,7 @@ public class GameDAOUTest {
     public void setUp() throws SQLException {
         playerDAO = new PlayerDAO();
         playerDAO.createTable();
-//        playerDAO.setTableIdToStartAt100();
+        playerDAO.setTableIdToStartAt100();
         gameDAO = new GameDAO();
         gameDAO.createTable();
         gameDAO.setTableIdToStartAt100();
@@ -95,7 +97,7 @@ public class GameDAOUTest {
         System.out.println(expectedList);
         System.out.println(GameDAO.getByPlayerId(100));
 
-        Assert.assertEquals(expectedList.containsAll(GameDAO.getByPlayerId(100)), GameDAO.getByPlayerId(100).containsAll(expectedList));
+        Assert.assertEquals(expectedList.containsAll(GameDAO.getByPlayerId(101)), GameDAO.getByPlayerId(101).containsAll(expectedList));
     }
 
     @Test
@@ -119,8 +121,8 @@ public class GameDAOUTest {
         expectedList.add(game2);
 
         System.out.println(GameDAO.getById(100));
-//        System.out.println(expectedList);
-//        Assert.assertTrue(GameDAO.getById(101).containsAll(expectedList));
+        System.out.println(expectedList);
+        Assert.assertTrue(GameDAO.getById(101).containsAll(expectedList));
     }
 
 }
